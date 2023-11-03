@@ -3,9 +3,10 @@ repos:
     rev: v2.3.0
     hooks:
       - id: check-yaml
-      - id: end-of-file-fixer
-        exclude: ^(?!\brequirements\.txt$)
       - id: trailing-whitespace
+        exclude: '^requirements\.txt$'
+      - id: end-of-file-fixer
+        exclude: '^requirements\.txt$'
       - id: check-added-large-files
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.5
