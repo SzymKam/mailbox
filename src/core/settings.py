@@ -40,8 +40,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "postbox",
+    "django_extensions",
+    "rest_framework",
 ]
+
+INSTALLED_EXTENSIONS = ["api", "management"]
+
+INSTALLED_APPS = INSTALLED_APPS + INSTALLED_EXTENSIONS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
