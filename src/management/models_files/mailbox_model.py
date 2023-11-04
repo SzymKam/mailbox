@@ -5,7 +5,7 @@ from django.utils import timezone
 class Mailbox(models.Model):
     host = models.CharField()
     port = models.IntegerField(default=465)
-    login = models.CharField()
+    login = models.CharField(max_length=50)
     password = models.CharField()
     email_from = models.EmailField()
     use_ssl = models.BooleanField(default=True)
