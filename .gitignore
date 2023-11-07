@@ -24,7 +24,6 @@ staticfiles/
 *.bak
 *.idea
 *.vscode
-__pycache__/
 
 # Ignore the virtual environment
 venv/
