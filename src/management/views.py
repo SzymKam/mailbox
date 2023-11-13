@@ -28,13 +28,6 @@ class EmailManagement:
         )
         email.send()
 
-        # send_mail(
-        #     subject=self.template.subject,
-        #     from_email=
-        #     message=self.template.text,
-        #     recipient_list=
-        # )
-
 
 def xyz():
     ...
