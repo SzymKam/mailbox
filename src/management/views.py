@@ -20,12 +20,20 @@ class EmailManagement:
         self.template = get_object_or_404(klass=Template, id=self.data.get("template"))
 
     def _email_sending(self):
-        send_mail(
+        email = EmailMessage(
             subject=self.template.subject,
+            body=self.template.text,
             from_email="szymon15kaminski@gmail.com",
-            message=self.template.text,
-            recipient_list=["szymon15kaminski@gmail.com"],
+            to=["szymon15kaminski@gmail.com"],
         )
+        email.send()
+
+        # send_mail(
+        #     subject=self.template.subject,
+        #     from_email=
+        #     message=self.template.text,
+        #     recipient_list=
+        # )
 
 
 def xyz():
