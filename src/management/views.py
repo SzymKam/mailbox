@@ -26,7 +26,10 @@ class EmailManagement:
             from_email="szymon15kaminski@gmail.com",
             to=["szymon15kaminski@gmail.com"],
             # not obligatory values
-            attachments=self.template.attachment,
+            cc=self.cc,
+            bcc=self.bcc,
+            reply_to=self.reply_to
+            # attachments=self.template.attachment,
         )
         email.send()
 
