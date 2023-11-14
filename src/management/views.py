@@ -28,7 +28,7 @@ class EmailManagement:
         self.use_ssl = self.mailbox.use_ssl
 
     def _email_sending(self):
-        if self.mailbox.is_active == False:
+        if not self.mailbox.is_active:
             return HttpResponse(status=status.HTTP_406_NOT_ACCEPTABLE)
 
         email = EmailMessage(
@@ -36,7 +36,6 @@ class EmailManagement:
             body=self.template.text,
             from_email=self.mailbox.email_from,
             to=self.to,
-            # not obligatory values
             cc=self.cc,
             bcc=self.bcc,
             reply_to=self.reply_to,
