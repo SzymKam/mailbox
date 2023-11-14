@@ -1,4 +1,5 @@
 from django.core.mail import EmailMessage
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .models import Mailbox, Template
@@ -24,11 +25,12 @@ class EmailManagement:
         self.port = self.mailbox.port
         self.use_ssl = self.mailbox.use_ssl
 
-        # is_active = models.BooleanField(default=False, null=True, blank=True)
-        #
         # sent = models.IntegerField(null=True, blank=True)
 
     def _email_sending(self):
+        if self.mailbox.is_active is not True:
+            return HttpResponse("Mailbox is not active")
+
         email = EmailMessage(
             subject=self.template.subject,
             body=self.template.text,
