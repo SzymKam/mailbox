@@ -1,4 +1,4 @@
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import EmailMessage
 from django.shortcuts import get_object_or_404
 
 from .models import Mailbox, Template
@@ -18,6 +18,15 @@ class EmailManagement:
         self.send_date = self.data.get("send_date")
         self.mailbox = get_object_or_404(klass=Mailbox, id=self.data.get("mailbox"))
         self.template = get_object_or_404(klass=Template, id=self.data.get("template"))
+
+    def _get_mailbox_settings(self):
+        self.host = self.mailbox.host
+        self.port = self.mailbox.port
+        self.use_ssl = self.mailbox.use_ssl
+
+        # is_active = models.BooleanField(default=False, null=True, blank=True)
+        #
+        # sent = models.IntegerField(null=True, blank=True)
 
     def _email_sending(self):
         email = EmailMessage(
@@ -44,4 +53,5 @@ def xyz():
     # 3) Renderuje jakiś wykres
     # 4) Cachuje dane np. na 5 minut.
 
-    #
+    send_date = models.DateTimeField(blank=True, null=True, default=None)
+    date = mo
