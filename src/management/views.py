@@ -1,6 +1,7 @@
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 
 from .models import Mailbox, Template
 
@@ -28,7 +29,7 @@ class EmailManagement:
 
     def _email_sending(self):
         if self.mailbox.is_active == False:
-            return HttpResponse("Mailbox is not active")
+            return HttpResponse(status=status.HTTP_406_NOT_ACCEPTABLE)
 
         email = EmailMessage(
             subject=self.template.subject,
@@ -42,14 +43,7 @@ class EmailManagement:
             attachments=self.template.attachment,
         )
         email.send()
-        # print(self.mailbox.sent)
-        # self.mailbox.sent += 1
-        # print(self.mailbox.sent)
-        # self.mailbox.save()
 
-
-def xyz():
-    ...
     # 1) Sprawdza czy dane do wykresu znajdują się w redis np. {'submissions': {'2023-01-01': 3}}
     # 2) Renderuje jakis wykres
 
@@ -57,6 +51,3 @@ def xyz():
     # 2) Robi zapytanie do bazy danych lub zewnętrznego API.
     # 3) Renderuje jakiś wykres
     # 4) Cachuje dane np. na 5 minut.
-
-    send_date = models.DateTimeField(blank=True, null=True, default=None)
-    date = mo
