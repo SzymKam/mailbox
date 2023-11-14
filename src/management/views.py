@@ -9,6 +9,7 @@ class EmailManagement:
     def __init__(self, data: dict):
         self.data = data
         self._unpack_data()
+        self._get_mailbox_settings()
         self._email_sending()
 
     def _unpack_data(self):
@@ -25,10 +26,8 @@ class EmailManagement:
         self.port = self.mailbox.port
         self.use_ssl = self.mailbox.use_ssl
 
-        # sent = models.IntegerField(null=True, blank=True)
-
     def _email_sending(self):
-        if self.mailbox.is_active is not True:
+        if self.mailbox.is_active == False:
             return HttpResponse("Mailbox is not active")
 
         email = EmailMessage(
@@ -43,6 +42,10 @@ class EmailManagement:
             attachments=self.template.attachment,
         )
         email.send()
+        # print(self.mailbox.sent)
+        # self.mailbox.sent += 1
+        # print(self.mailbox.sent)
+        # self.mailbox.save()
 
 
 def xyz():
