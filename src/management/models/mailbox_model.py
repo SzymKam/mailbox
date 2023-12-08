@@ -12,4 +12,4 @@ class Mailbox(models.Model):
     is_active = models.BooleanField(default=False, null=True, blank=True)
     date = models.DateTimeField(default=timezone.now, null=True, blank=True)
     last_update = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    sent = models.IntegerField(null=True, blank=True)
+    sent = models.IntegerField(default=0, blank=True)
