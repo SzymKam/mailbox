@@ -42,6 +42,8 @@ class EmailManagement:
             attachments=self.template.attachment,
         )
         email.send()
+        self.mailbox.sent += 1
+        self.mailbox.save()
 
     # 1) Sprawdza czy dane do wykresu znajdują się w redis np. {'submissions': {'2023-01-01': 3}}
     # 2) Renderuje jakis wykres
