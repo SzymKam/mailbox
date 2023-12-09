@@ -1,5 +1,6 @@
 # Byte-compiled / optimized Python files
 __pycache__/
+__pycache__
 *.pyc
 
 # The SQLite database file
