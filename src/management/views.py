@@ -1,7 +1,9 @@
+from django.core.exceptions import BadRequest
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.response import Response
 
 from .models import Mailbox, Template
 
@@ -28,22 +30,23 @@ class EmailManagement:
         self.use_ssl = self.mailbox.use_ssl
 
     def _email_sending(self):
-        if not self.mailbox.is_active:
-            return HttpResponse(status=status.HTTP_406_NOT_ACCEPTABLE)
+        if self.mailbox.is_active:
+            email = EmailMessage(
+                subject=self.template.subject,
+                body=self.template.text,
+                from_email=self.mailbox.email_from,
+                to=self.to,
+                cc=self.cc,
+                bcc=self.bcc,
+                reply_to=self.reply_to,
+                attachments=self.template.attachment,
+            )
+            email.send()
+            self.mailbox.sent += 1
+            self.mailbox.save()
 
-        email = EmailMessage(
-            subject=self.template.subject,
-            body=self.template.text,
-            from_email=self.mailbox.email_from,
-            to=self.to,
-            cc=self.cc,
-            bcc=self.bcc,
-            reply_to=self.reply_to,
-            attachments=self.template.attachment,
-        )
-        email.send()
-        self.mailbox.sent += 1
-        self.mailbox.save()
+        else:
+            return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST)
 
     # 1) Sprawdza czy dane do wykresu znajdują się w redis np. {'submissions': {'2023-01-01': 3}}
     # 2) Renderuje jakis wykres
