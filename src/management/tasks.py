@@ -3,7 +3,7 @@ from django.core.mail import EmailMessage
 
 
 @shared_task
-def _email_sending(self):
+def email_sending(self):
     email = EmailMessage(
         subject=self.template.subject,
         body=self.template.text,
