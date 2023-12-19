@@ -28,9 +28,14 @@ class EmailManagement:
 
     def send(self):
         if self.mailbox.is_active:
-            email_sending.delay()
+            email_sending.delay(
+                template=self.template,
+                mailbox=self.mailbox,
+                to=self.to,
+            )
             self.mailbox.sent += 1
             self.mailbox.save()
+            return Response("Email send", status=status.HTTP_201_CREATED)
 
         else:
             return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST)
