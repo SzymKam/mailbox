@@ -15,7 +15,7 @@ class EmailManagement:
         self._unpack_data()
         self._get_mailbox_settings()
 
-    def _unpack_data(self):
+    def _unpack_data(self) -> None:
         self.to = self.data.get("to")
         self.cc = self.data.get("cc")
         self.bcc = self.data.get("bcc")
@@ -24,20 +24,16 @@ class EmailManagement:
         self.mailbox = get_object_or_404(klass=Mailbox, id=self.data.get("mailbox"))
         self.template = get_object_or_404(klass=Template, id=self.data.get("template"))
 
-    def _get_mailbox_settings(self):
+    def _get_mailbox_settings(self) -> None:
         self.host = self.mailbox.host
         self.port = self.mailbox.port
         self.use_ssl = self.mailbox.use_ssl
 
-        # self._email_sending()
+    def send(self):
+        if self.mailbox.is_active:
+            email_sending.delay()
+            self.mailbox.sent += 1
+            self.mailbox.save()
 
-    # def run(self):
-    #     email_sending.delay()
-
-    # def _send_email(self):
-
-    #         self.mailbox.sent += 1
-    #         self.mailbox.save()
-    #
-    #     else:
-    #         return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST)
