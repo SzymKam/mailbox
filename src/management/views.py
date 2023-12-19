@@ -7,8 +7,9 @@ from .tasks import email_sending
 
 
 class EmailManagement:
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: dict, headers: dict) -> None:
         self.data = data
+        self.headers = headers
         self._unpack_data()
         self._get_mailbox_settings()
 
@@ -35,7 +36,7 @@ class EmailManagement:
             )
             self.mailbox.sent += 1
             self.mailbox.save()
-            return Response("Email send", status=status.HTTP_201_CREATED)
+            return Response("Email send", status=status.HTTP_201_CREATED, headers=self.headers)
 
         else:
-            return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST, headers=self.headers)
