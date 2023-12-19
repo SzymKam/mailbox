@@ -1,6 +1,3 @@
-from django.core.exceptions import BadRequest
-from django.core.mail import EmailMessage
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
