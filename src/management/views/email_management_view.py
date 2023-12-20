@@ -2,12 +2,14 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 
-from .models import Mailbox, Template
-from .tasks import email_sending
+from ..models import Mailbox, Template
+from ..tasks import email_sending
+from .error_report_view import ReportBug
 
 
 class EmailManagement:
     def __init__(self, data: dict, headers: dict) -> None:
+        self.attempt = None
         self.data = data
         self.headers = headers
         self._unpack_data()
@@ -27,8 +29,19 @@ class EmailManagement:
         self.port = self.mailbox.port
         self.use_ssl = self.mailbox.use_ssl
 
-    def send(self):
+    def sending_attempt(self):
         if self.mailbox.is_active:
+            while self.attempt < 3:
+                self._send()
+
+            return Response(
+                data="Reached max attempt value. Check connection", status=status.HTTP_429_TOO_MANY_REQUESTS
+            )
+
+        return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST, headers=self.headers)
+
+    def _send(self):
+        try:
             email_sending.delay(
                 template=self.template,
                 mailbox=self.mailbox,
@@ -38,5 +51,6 @@ class EmailManagement:
             self.mailbox.save()
             return Response("Email send", status=status.HTTP_201_CREATED, headers=self.headers)
 
-        else:
-            return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST, headers=self.headers)
+        except ConnectionError:
+            ReportBug(mailbox=self.mailbox, attempt=self.attempt)
+            self.attempt += 1
