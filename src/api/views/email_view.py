@@ -17,4 +17,4 @@ class EmailView(GenericViewSet, CreateModelMixin, ListModelMixin):
         headers = self.get_success_headers(serializer.data)
 
         email_management = EmailManagement(data=serializer.data, headers=headers)
-        email_management.send()
+        email_management.sending_attempt()
