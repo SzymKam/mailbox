@@ -1,4 +1,6 @@
+from rest_framework import status
 from rest_framework.mixins import CreateModelMixin, ListModelMixin
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from api.serializers.email_serializer import EmailSerializer
@@ -16,5 +18,7 @@ class EmailView(GenericViewSet, CreateModelMixin, ListModelMixin):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
-        email_management = EmailManagement(data=serializer.data, headers=headers)
-        email_management.sending_attempt()
+        #     email_management = EmailManagement(data=serializer.data, headers=headers)
+        #     email_management.sending_attempt()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
