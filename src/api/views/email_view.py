@@ -18,7 +18,6 @@ class EmailView(GenericViewSet, CreateModelMixin, ListModelMixin):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
-        #     email_management = EmailManagement(data=serializer.data, headers=headers)
-        #     email_management.sending_attempt()
+        email_management = EmailManagement(data=serializer.data, headers=headers)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return email_management.sending_attempt()
