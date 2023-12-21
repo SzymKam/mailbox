@@ -9,11 +9,11 @@ class TemplateView(ModelViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer) -> None:
         serializer.validated_data["date"] = timezone.now()
         serializer.validated_data["last_update"] = timezone.now()
         serializer.save()
 
-    def perform_update(self, serializer):
+    def perform_update(self, serializer) -> None:
         serializer.validated_data["last_update"] = timezone.now()
         serializer.save()
