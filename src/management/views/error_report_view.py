@@ -8,7 +8,7 @@ class ReportBug:
         self._mailbox = mailbox
         self._attempt = attempt
 
-    def _save_bug_into_file(self):
+    def _save_bug_into_file(self) -> None:
         with open("logs/email.log", "w") as file:
             file.write(
                 f"Connection error when sending email from: {self._mailbox.host}; "
