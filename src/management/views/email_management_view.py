@@ -9,7 +9,7 @@ from .error_report_view import ReportBug
 
 class EmailManagement:
     def __init__(self, data: dict, headers: dict) -> None:
-        self.attempt = None
+        self.attempt = 0
         self.data = data
         self.headers = headers
         self._unpack_data()
@@ -31,8 +31,8 @@ class EmailManagement:
 
     def sending_attempt(self) -> Response:
         if self.mailbox.is_active:
-            # while self.attempt < 3:
-            #     self._send()
+            while self.attempt < 3:
+                self._send()
 
             return Response(
                 data="Reached max attempt value. Check connection", status=status.HTTP_429_TOO_MANY_REQUESTS
@@ -54,3 +54,6 @@ class EmailManagement:
         except ConnectionError:
             ReportBug(mailbox=self.mailbox, attempt=self.attempt)
             self.attempt += 1
+
+
+### upgrade send method
