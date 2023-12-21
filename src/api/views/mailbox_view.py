@@ -9,11 +9,11 @@ class MailboxView(ModelViewSet):
     queryset = Mailbox.objects.all()
     serializer_class = MailboxSerializer
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer) -> None:
         serializer.validated_data["date"] = timezone.now()
         serializer.validated_data["last_update"] = timezone.now()
         serializer.save()
 
-    def perform_update(self, serializer):
+    def perform_update(self, serializer) -> None:
         serializer.validated_data["last_update"] = timezone.now()
         serializer.save()
