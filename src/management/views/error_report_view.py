@@ -4,13 +4,18 @@ from ..models import Mailbox
 
 
 class ReportBug:
-    def __init__(self, mailbox: Mailbox, attempt: int) -> None:
-        self._mailbox = mailbox
-        self._attempt = attempt
+    @staticmethod
+    def save_log_attempt_success(mailbox: Mailbox, attempt: int) -> None:
+        ReportBug.__save_into_file(mailbox=mailbox, attempt=attempt, result="Email send successfully")
 
-    def _save_bug_into_file(self) -> None:
-        with open("logs/email.log", "w") as file:
+    @staticmethod
+    def save_log_attempt_failed(mailbox: Mailbox, attempt: int) -> None:
+        ReportBug.__save_into_file(mailbox=mailbox, attempt=attempt, result="Error when sending email")
+
+    @staticmethod
+    def __save_into_file(mailbox: Mailbox, attempt: int, result: str) -> None:
+        with open("email.txt", "w") as file:
             file.write(
-                f"Connection error when sending email from: {self._mailbox.host}; "
-                f"email: {self._mailbox.email_from}. Attempt numer {self._attempt}, at {timezone.now()}"
+                f"{result} from: {mailbox.host};"
+                f"email: {mailbox.email_from}. Attempt numer {attempt}, at {timezone.now()}"
             )
