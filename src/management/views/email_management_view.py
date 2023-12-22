@@ -35,27 +35,32 @@ class EmailManagement:
         if self.mailbox.is_active:
             for _ in range(3):
                 if self._send():
-                    return Response("Mail send", status=status.HTTP_201_CREATED, headers=self.headers)
+                    success = True
+                    break
 
-            return Response(
-                data="Reached max attempt value. Check connection", status=status.HTTP_429_TOO_MANY_REQUESTS
-            )
+            if success:
+                return Response("Mail send", status=status.HTTP_201_CREATED, headers=self.headers)
+
+            else:
+                return Response(
+                    data="Reached max attempt value. Check connection", status=status.HTTP_429_TOO_MANY_REQUESTS
+                )
         else:
             return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST, headers=self.headers)
 
     def _send(self) -> bool:
         try:
-            # email_sending.delay(
-            #     template=self.template,
-            #     mailbox=self.mailbox,
-            #     to=self.to,
-            # )
+            email_sending.delay(
+                template=self.template,
+                mailbox=self.mailbox,
+                to=self.to,
+            )
             self.mailbox.sent += 1
             self.mailbox.save()
             ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_success()
             return True
 
         except Exception as error:
-            ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_failed()
+            ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_failed(error=error)
             self.attempt += 1
             return False
