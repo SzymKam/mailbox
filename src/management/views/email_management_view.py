@@ -30,46 +30,32 @@ class EmailManagement:
         self.use_ssl = self.mailbox.use_ssl
 
     def sending_attempt(self) -> Response:
+        success = False
+
         if self.mailbox.is_active:
-            # while self.attempt < 3:
-            self._send()
+            for _ in range(3):
+                if self._send():
+                    return Response("Mail send", status=status.HTTP_201_CREATED, headers=self.headers)
 
             return Response(
                 data="Reached max attempt value. Check connection", status=status.HTTP_429_TOO_MANY_REQUESTS
             )
+        else:
+            return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST, headers=self.headers)
 
-        return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST, headers=self.headers)
+    def _send(self) -> bool:
+        try:
+            # email_sending.delay(
+            #     template=self.template,
+            #     mailbox=self.mailbox,
+            #     to=self.to,
+            # )
+            self.mailbox.sent += 1
+            self.mailbox.save()
+            ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_success()
+            return True
 
-    def _send(self) -> Response:
-        print("sending")
-        ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_success()
-        print("sending2")
-        ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_failed()
-
-        # try:
-        #     email_sending.delay(
-        #         template=self.template,
-        #         mailbox=self.mailbox,
-        #         to=self.to,
-        #     )
-        #
-        #
-        # except Exception:
-        #     pass
-        #
-        #
-
-        # self.attempt += 1
-
-        # try:
-        #
-        #
-        #
-        #     self.mailbox.sent += 1
-        #     self.mailbox.save()
-        #     return Response("Email send", status=status.HTTP_201_CREATED, headers=self.headers)
-        #
-        # except  as error:
-        #
-        #     ReportBug(mailbox=self.mailbox, attempt=self.attempt)
-        #     self.attempt += 1
+        except Exception as error:
+            ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_failed()
+            self.attempt += 1
+            return False
