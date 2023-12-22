@@ -16,11 +16,11 @@ class ReportBug:
 
     @staticmethod
     def __save_into_file(mailbox: Mailbox, attempt: int, result: str) -> None:
-        # file_dir = "src/logs/"
-        # if not os.path.exists(file_dir):
-        #     os.makedirs(file_dir)
+        file_dir = "src/logs/"
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        with open(os.path.join("email_log.log"), "a") as file:
+        with open(os.path.join(file_dir, "email_log.log"), "a") as file:
             file.write(
                 f"{result} from: {mailbox.host};"
                 f"email: {mailbox.email_from}. Attempt numer {attempt}, at {timezone.now()} \n"
