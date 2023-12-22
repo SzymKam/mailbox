@@ -7,6 +7,7 @@ from ..models import Mailbox
 
 class ReportBug:
     def __init__(self, mailbox: Mailbox, attempt: int) -> None:
+        self.error = None
         self.mailbox = mailbox
         self.attempt = attempt
         self.result: str = ""
@@ -15,7 +16,8 @@ class ReportBug:
         self.result = "Email send successfully"
         self.__save_into_file()
 
-    def save_log_attempt_failed(self) -> None:
+    def save_log_attempt_failed(self, error: Exception) -> None:
+        self.error = error
         self.result = "Error when sending email"
         self.__save_into_file()
 
@@ -29,3 +31,5 @@ class ReportBug:
                 f"{self.result} from: {self.mailbox.host};"
                 f"email: {self.mailbox.email_from}. Attempt numer {self.attempt}, at {timezone.now()} \n"
             )
+            if self.error:
+                file.write(f"Error: {self.error}\n")
