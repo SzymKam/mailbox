@@ -9,7 +9,7 @@ from .error_report_view import ReportBug
 
 class EmailManagement:
     def __init__(self, data: dict, headers: dict) -> None:
-        self.attempt = 0
+        self.attempt = 1
         self.data = data
         self.headers = headers
         self._unpack_data()
@@ -42,9 +42,9 @@ class EmailManagement:
 
     def _send(self) -> Response:
         print("sending")
-        ReportBug.save_log_attempt_failed(mailbox=self.mailbox, attempt=self.attempt)
+        ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_success()
         print("sending2")
-        ReportBug.save_log_attempt_success(mailbox=self.mailbox, attempt=self.attempt)
+        ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_failed()
 
         # try:
         #     email_sending.delay(
