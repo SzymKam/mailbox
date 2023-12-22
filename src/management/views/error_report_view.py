@@ -1,3 +1,5 @@
+import os
+
 from django.utils import timezone
 
 from ..models import Mailbox
@@ -14,8 +16,12 @@ class ReportBug:
 
     @staticmethod
     def __save_into_file(mailbox: Mailbox, attempt: int, result: str) -> None:
-        with open("email.txt", "w") as file:
+        # file_dir = "src/logs/"
+        # if not os.path.exists(file_dir):
+        #     os.makedirs(file_dir)
+
+        with open(os.path.join("email_log.log"), "a") as file:
             file.write(
                 f"{result} from: {mailbox.host};"
-                f"email: {mailbox.email_from}. Attempt numer {attempt}, at {timezone.now()}"
+                f"email: {mailbox.email_from}. Attempt numer {attempt}, at {timezone.now()} \n"
             )
