@@ -31,8 +31,8 @@ class EmailManagement:
 
     def sending_attempt(self) -> Response:
         if self.mailbox.is_active:
-            while self.attempt < 3:
-                self._send()
+            # while self.attempt < 3:
+            self._send()
 
             return Response(
                 data="Reached max attempt value. Check connection", status=status.HTTP_429_TOO_MANY_REQUESTS
@@ -41,19 +41,35 @@ class EmailManagement:
         return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST, headers=self.headers)
 
     def _send(self) -> Response:
-        try:
-            email_sending.delay(
-                template=self.template,
-                mailbox=self.mailbox,
-                to=self.to,
-            )
-            self.mailbox.sent += 1
-            self.mailbox.save()
-            return Response("Email send", status=status.HTTP_201_CREATED, headers=self.headers)
+        print("sending")
+        ReportBug.save_log_attempt_failed(mailbox=self.mailbox, attempt=self.attempt)
+        print("sending2")
+        ReportBug.save_log_attempt_success(mailbox=self.mailbox, attempt=self.attempt)
 
-        except ConnectionError:
-            ReportBug(mailbox=self.mailbox, attempt=self.attempt)
-            self.attempt += 1
+        # try:
+        #     email_sending.delay(
+        #         template=self.template,
+        #         mailbox=self.mailbox,
+        #         to=self.to,
+        #     )
+        #
+        #
+        # except Exception:
+        #     pass
+        #
+        #
 
+        # self.attempt += 1
 
-### upgrade send method
+        # try:
+        #
+        #
+        #
+        #     self.mailbox.sent += 1
+        #     self.mailbox.save()
+        #     return Response("Email send", status=status.HTTP_201_CREATED, headers=self.headers)
+        #
+        # except  as error:
+        #
+        #     ReportBug(mailbox=self.mailbox, attempt=self.attempt)
+        #     self.attempt += 1
