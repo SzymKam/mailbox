@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.response import Response
@@ -11,6 +12,9 @@ from management.views.email_management_view import EmailManagement
 class EmailView(GenericViewSet, CreateModelMixin, ListModelMixin):
     queryset = Email.objects.all()
     serializer_class = EmailSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["send_date", "date"]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
