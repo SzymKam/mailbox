@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "rest_framework",
+    "django_filters",
 ]
 
 INSTALLED_EXTENSIONS = ["api", "management"]
