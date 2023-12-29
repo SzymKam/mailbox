@@ -51,12 +51,7 @@ class EmailManagement:
     def _send(self) -> bool:
         # try:
         email_sending.delay(
-            template=self.template,
-            mailbox=self.mailbox,
-            to=self.to,
-            cc=self.cc,
-            # bcc=,
-            # reply_to=
+            template=self.template, mailbox=self.mailbox, to=self.to, cc=self.cc, bcc=self.bcc, reply_to=self.reply_to
         )
         self.mailbox.sent += 1
         self.mailbox.save()
