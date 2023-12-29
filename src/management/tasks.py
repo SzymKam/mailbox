@@ -5,7 +5,7 @@ from .models import Mailbox, Template
 
 
 @shared_task(bind=True)
-def email_sending(template: Template, mailbox: Mailbox, to: str, cc: str, bcc: str, reply_to: str) -> str:
+def email_sending(self, template: Template, mailbox: Mailbox, to: str, cc: str, bcc: str, reply_to: str) -> str:
     email = EmailMessage(
         subject=template.subject,
         body=template.text,
