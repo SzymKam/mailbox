@@ -50,11 +50,11 @@ class EmailManagement:
 
     def _send(self) -> bool:
         try:
-            email_sending.delay(
-                template=self.template,
-                mailbox=self.mailbox,
-                to=self.to,
-            )
+            # email_sending.delay(
+            #     template=self.template,
+            #     mailbox=self.mailbox,
+            #     to=self.to,
+            # )
             self.mailbox.sent += 1
             self.mailbox.save()
             ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_success()
