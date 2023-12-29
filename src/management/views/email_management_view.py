@@ -49,18 +49,22 @@ class EmailManagement:
             return Response("Mailbox is not active", status=status.HTTP_400_BAD_REQUEST, headers=self.headers)
 
     def _send(self) -> bool:
-        try:
-            email_sending.delay(
-                template=self.template,
-                mailbox=self.mailbox,
-                to=self.to,
-            )
-            self.mailbox.sent += 1
-            self.mailbox.save()
-            ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_success()
-            return True
+        # try:
+        email_sending.delay(
+            template=self.template,
+            mailbox=self.mailbox,
+            to=self.to,
+            cc=self.cc,
+            # bcc=,
+            # reply_to=
+        )
+        self.mailbox.sent += 1
+        self.mailbox.save()
+        ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_success()
+        return True
 
-        except Exception as error:
-            ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_failed(error=error)
-            self.attempt += 1
-            return False
+    #
+    # except Exception as error:
+    #     ReportBug(mailbox=self.mailbox, attempt=self.attempt).save_log_attempt_failed(error=error)
+    #     self.attempt += 1
+    #     return False
