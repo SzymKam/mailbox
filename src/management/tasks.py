@@ -4,8 +4,8 @@ from django.core.mail import EmailMessage
 from .models import Mailbox, Template
 
 
-@shared_task
-def email_sending(template: Template, mailbox: Mailbox, to: str, cc: str, bcc: str, reply_to: str) -> None:
+@shared_task(bind=True)
+def email_sending(template: Template, mailbox: Mailbox, to: str, cc: str, bcc: str, reply_to: str) -> str:
     email = EmailMessage(
         subject=template.subject,
         body=template.text,
@@ -17,3 +17,4 @@ def email_sending(template: Template, mailbox: Mailbox, to: str, cc: str, bcc: s
         attachments=template.attachment,
     )
     email.send()
+    return "Email sent"
