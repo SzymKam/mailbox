@@ -16,5 +16,6 @@ def email_sending(template: Template, mailbox: Mailbox, to: str, cc: str, bcc: s
         reply_to=reply_to,
         attachments=template.attachment,
     )
+
     email.send()
     return "Email sent"
