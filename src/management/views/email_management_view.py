@@ -63,7 +63,7 @@ class EmailManagement:
         # try:
         email_sending.delay(
             template=self._template_serializer(),
-            mailbox=self.mailbox,
+            mailbox=self._mailbox_serializer(),
             to=self.to,
             cc=self.cc,
             bcc=self.bcc,
