@@ -1,8 +1,6 @@
 from celery import shared_task
 from django.core.mail import EmailMessage
 
-from .models import Mailbox, Template
-
 
 @shared_task(bind=True)
 def email_sending(self, template: dict, mailbox: dict, to: str, cc: str, bcc: str, reply_to: str) -> str:
