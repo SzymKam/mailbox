@@ -2,6 +2,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 
+from api.serializers.template_serializer import TemplateSerializer
+
 from ..models import Mailbox, Template
 from ..tasks import email_sending
 from .error_report_view import ReportBug
@@ -28,6 +30,10 @@ class EmailManagement:
         self.host = self.mailbox.host
         self.port = self.mailbox.port
         self.use_ssl = self.mailbox.use_ssl
+
+    def _template_serializer(self):
+        template_data = TemplateSerializer(instance=self.template).data
+        return template_data
 
     def sending_attempt(self) -> Response:
         success = False
