@@ -5,17 +5,16 @@ from .models import Mailbox, Template
 
 
 @shared_task(bind=True)
-def email_sending(self, template: Template, mailbox: Mailbox, to: str, cc: str, bcc: str, reply_to: str) -> str:
+def email_sending(self, template: dict, mailbox: dict, to: str, cc: str, bcc: str, reply_to: str) -> str:
     email = EmailMessage(
-        subject=template.subject,
-        body=template.text,
-        from_email=mailbox.email_from,
+        subject=template.get("subject"),
+        body=template.get("text"),
+        from_email=mailbox.get("email_from"),
         to=to,
         cc=cc,
         bcc=bcc,
         reply_to=reply_to,
-        attachments=template.attachment,
+        attachments=template.get("attachments"),
     )
-
     email.send()
-    return "Email sent"
+    return f"Email sent to {to}"
