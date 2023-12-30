@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 
+from api.serializers.mailbox_serializer import MailboxSerializer
 from api.serializers.template_serializer import TemplateSerializer
 
 from ..models import Mailbox, Template
@@ -35,6 +36,10 @@ class EmailManagement:
         template_data = TemplateSerializer(instance=self.template).data
         return template_data
 
+    def _mailbox_serializer(self):
+        mailbox_data = MailboxSerializer(instance=self.mailbox).data
+        return mailbox_data
+
     def sending_attempt(self) -> Response:
         success = False
 
@@ -57,7 +62,12 @@ class EmailManagement:
     def _send(self) -> bool:
         # try:
         email_sending.delay(
-            template=self.template, mailbox=self.mailbox, to=self.to, cc=self.cc, bcc=self.bcc, reply_to=self.reply_to
+            template=self._template_serializer(),
+            mailbox=self.mailbox,
+            to=self.to,
+            cc=self.cc,
+            bcc=self.bcc,
+            reply_to=self.reply_to,
         )
         self.mailbox.sent += 1
         self.mailbox.save()
